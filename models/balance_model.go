@@ -5,6 +5,8 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"os"
+	"strconv"
 )
 
 type Balance struct {
@@ -45,8 +47,14 @@ func GetBalanceByNamespace(db DbOrTx, ns string) (*Balance, error) {
 
 func CreateNamespace(db DbOrTx, ns string) (err error) {
 
+	balance, err := initAccount()
+	if err != nil {
+		logger.Error("Init account err: %v", err.Error())
+		return err
+	}
+
 	if _, err = db.Exec(`INSERT INTO DF_balance
-			(namespace) VALUES(?)`, ns); err != nil {
+			(namespace, balance) VALUES(?, ?)`, ns, balance); err != nil {
 		logger.Error("INSERT INTO DF_balance error: %v", err.Error())
 
 	}
@@ -136,3 +144,18 @@ func logRollback(tx *sql.Tx) {
 		logger.Error(err.Error())
 	}
 }
+
+func initAccount() (int, error) {
+	logger.Info("Init user's account.")
+	balanceStr := os.Getenv("DEFAULTBALANCE")
+	if balanceStr == "" {
+		return 0, errors.New("Not set blance environment variable")
+	}
+	balance, err := strconv.Atoi(balanceStr)
+	logger.Info("Init balance %v ￥", balance)
+	if err != nil {
+		return 0, err
+	}
+	return balance, nil
+}
+
