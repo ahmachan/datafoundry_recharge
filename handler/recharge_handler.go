@@ -24,7 +24,7 @@ const (
 	letterBytes = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 )
 
-var AdminUsers = []string{"admin", "datafoundry"}
+var AdminUsers = make([]string, 0)
 
 type Aipayrecharge struct {
 	Order_id  string  `json:"order_id"`
@@ -57,6 +57,8 @@ type NotifyResult struct {
 
 func init() {
 	rand.Seed(time.Now().UnixNano())
+
+	initAdminUser()
 }
 
 func DoRecharge(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
@@ -520,4 +522,14 @@ func genUUID() string {
 		b[i] = letterBytes[rand.Intn(len(letterBytes))]
 	}
 	return string(b)
+}
+
+func initAdminUser()  {
+	admins := os.Getenv("ADMINUSERS")
+	if admins == "" {
+		logger.Warn("Not set admin users.")
+	}
+	admins = strings.TrimSpace(admins)
+	AdminUsers = strings.Split(admins, " ")
+	logger.Info("Admin users: %v.", AdminUsers)
 }
