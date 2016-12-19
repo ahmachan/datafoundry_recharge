@@ -146,11 +146,13 @@ func logRollback(tx *sql.Tx) {
 }
 
 func initAccount() (int, error) {
+	logger.Info("Init user's account.")
 	balanceStr := os.Getenv("DEFAULTBALANCE")
 	if balanceStr == "" {
 		return 0, errors.New("Not set blance environment variable")
 	}
 	balance, err := strconv.Atoi(balanceStr)
+	logger.Info("Init balance %v ￥", balance)
 	if err != nil {
 		return 0, err
 	}
