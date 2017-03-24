@@ -41,13 +41,12 @@ func RemoteCallWithBody(method, url string, token, user string, body []byte, con
 		request.Header.Set("User", user)
 	}
 
-	transCfg := &http.Transport{
-		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
-	}
-
 	client := &http.Client{
-		Transport: transCfg,
-		Timeout:   time.Duration(GeneralRemoteCallTimeout) * time.Second,
+		Transport: &http.Transport{
+			DisableKeepAlives: true,
+			TLSClientConfig:   &tls.Config{InsecureSkipVerify: true},
+		},
+		Timeout: time.Duration(GeneralRemoteCallTimeout) * time.Second,
 	}
 	response, err := client.Do(request)
 	if response != nil {
