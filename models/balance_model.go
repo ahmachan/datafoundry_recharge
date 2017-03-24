@@ -24,7 +24,7 @@ func GetBalanceByNamespace(db DbOrTx, ns string) (*Balance, error) {
 	err = db.QueryRow(`SELECT 
 		balance, 
 		state
-		FROM DF_balance 
+		FROM DF_BALANCE
 		WHERE 
 		namespace=?`,
 		ns).Scan(
@@ -53,7 +53,7 @@ func CreateNamespace(db DbOrTx, ns string) (err error) {
 		return err
 	}
 
-	if _, err = db.Exec(`INSERT INTO DF_balance
+	if _, err = db.Exec(`INSERT INTO DF_BALANCE
 			(namespace, balance) VALUES(?, ?)`, ns, balance); err != nil {
 		logger.Error("INSERT INTO DF_balance error: %v", err.Error())
 
@@ -63,7 +63,7 @@ func CreateNamespace(db DbOrTx, ns string) (err error) {
 
 func UpdateBalance(db DbOrTx, balance *Balance) (*Balance, error) {
 
-	sqlstr := fmt.Sprintf(`update DF_balance SET balance = %v where namespace = '%v'`, balance.Balance, balance.Namespace)
+	sqlstr := fmt.Sprintf(`update DF_BALANCE SET balance = %v where namespace = '%v'`, balance.Balance, balance.Namespace)
 
 	_, err := db.Exec(sqlstr)
 
@@ -156,4 +156,3 @@ func initAccount() (int, error) {
 	}
 	return balance, nil
 }
-
