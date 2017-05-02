@@ -23,7 +23,6 @@ var httpTransport = &http.Transport{
 	TLSClientConfig:   &tls.Config{InsecureSkipVerify: true},
 }
 
-
 func RemoteCallWithBody(method, url string, token, user string, body []byte, contentType string) (*http.Response, []byte, error) {
 	log.DefaultLogger().Debugf("method: %s, url: %s, token: %s, contentType: %s, body: %s", method, url, token, contentType, string(body))
 
@@ -46,8 +45,12 @@ func RemoteCallWithBody(method, url string, token, user string, body []byte, con
 	if user != "" {
 		request.Header.Set("User", user)
 	}
+
 	client := &http.Client{
-		Transport: httpTransport,
+		Transport: &http.Transport{
+			DisableKeepAlives: true,
+			TLSClientConfig:   &tls.Config{InsecureSkipVerify: true},
+		},
 		Timeout: time.Duration(GeneralRemoteCallTimeout) * time.Second,
 	}
 	response, err := client.Do(request)

@@ -24,7 +24,7 @@ const (
 	letterBytes = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 )
 
-var AdminUsers = []string{"admin", "datafoundry"}
+var AdminUsers = make([]string, 0)
 
 type Aipayrecharge struct {
 	Order_id  string  `json:"order_id"`
