@@ -43,7 +43,7 @@ func RecordRecharge(db *sql.DB, rechargeInfo *Transaction) error {
 
 	_, err := db.Exec(sqlstr,
 		rechargeInfo.TransactionId, rechargeInfo.Type, rechargeInfo.Amount, rechargeInfo.Namespace,
-		rechargeInfo.User, rechargeInfo.Reason, rechargeInfo.Region, rechargeInfo.Paymode, rechargeInfo.Status,rechargeInfo.Balance)
+		rechargeInfo.User, rechargeInfo.Reason, rechargeInfo.Region, rechargeInfo.Paymode, rechargeInfo.Status, rechargeInfo.Balance)
 
 	return err
 }
@@ -127,7 +127,7 @@ func ValidateOrderBy(orderBy string) string {
 	case "createtime":
 		return "CREATE_TIME"
 	}
-	return ""
+	return "ID"
 }
 
 func ValidateTransType(transtype string) string {
@@ -222,7 +222,7 @@ func UpdateRechargeAndBalance(db *sql.DB, transid, status string) (err error) {
 
 		trans, err := _getTransactionByTransId(db, transid)
 		if err != nil {
-			logger.Error("_getTransactionById:%v",err)
+			logger.Error("_getTransactionById:%v", err)
 			return err
 		}
 
@@ -232,7 +232,7 @@ func UpdateRechargeAndBalance(db *sql.DB, transid, status string) (err error) {
 			return err
 		}
 
-		err = UpdateTransactionBalance(db,transid,status,balance.Balance)
+		err = UpdateTransactionBalance(db, transid, status, balance.Balance)
 		if err != nil {
 			logger.Error("UpdateTransaction:%v", err)
 			return err
@@ -240,7 +240,7 @@ func UpdateRechargeAndBalance(db *sql.DB, transid, status string) (err error) {
 
 		logger.Debug("UpdateRechargeAndBalance---RechargeBalance:%v", balance.Balance)
 
-	}else {
+	} else {
 		err = UpdateTransaction(db, transid, status)
 		if err != nil {
 			logger.Error("UpdateTransaction:%v", err)
